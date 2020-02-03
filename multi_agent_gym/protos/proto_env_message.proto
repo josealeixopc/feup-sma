@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package protos;
+
+service TurnBasedServer {
+  rpc GetObservation(RequestInfo) returns (NDArray) {}
+}
+
+// From here: https://github.com/xainag/numproto/blob/master/numproto/protobuf/ndarray.proto
+message RequestInfo {
+  SubEnvInfo sub_env_info = 1;
+  NDArray ndarray = 2;
+}
+
+message NDArray {
+  bytes ndarray = 1;
+}
+
+message SubEnvInfo {
+  string sub_env_id = 1;
+}
