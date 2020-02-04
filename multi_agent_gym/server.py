@@ -1,6 +1,7 @@
 import logging
 import typing
 from concurrent.futures import ThreadPoolExecutor
+import json
 
 import numpy as np
 import grpc
@@ -18,8 +19,9 @@ class MultiAgentEnv:
     Responsible for all logic in an environment.
     """
 
-    def __init__(self, agent_envs_ids: typing.List[str]) -> None:
-        self.agent_envs_ids = agent_envs_ids
+    def __init__(self) -> None:
+        self.agent_envs_ids: typing.List[str] = []
+        self._set_agent_envs_ids()
         super().__init__()
 
     def reset(self, agent_id) -> np.ndarray:
@@ -33,7 +35,10 @@ class MultiAgentEnv:
     def _reset(self, agent_id) -> np.ndarray:
         raise NotImplementedError
 
-    def _step(self, agent_id, action) -> [np.ndarray, float, bool, dict]:
+    def _step(self, agent_id, action) -> typing.Tuple[np.ndarray, float, bool, dict]:
+        raise NotImplementedError
+
+    def _set_agent_envs_ids(self):
         raise NotImplementedError
 
 
@@ -61,7 +66,21 @@ class MultiAgentServicer(proto_env_message_pb2_grpc.TurnBasedServerServicer):
     def GetObservation(self,
                        request: proto_env_message_pb2.ActionInfo,
                        context) -> proto_env_message_pb2.Observation:
-        return super().GetObservation(request, context)
+
+        logger.debug("Received request:\n{}".format(request))
+
+        agent_id = request.sub_env_info.sub_env_id
+        agent_action = utils.numproto.proto_to_ndarray(request.action)
+        observation, reward, done, info = self.multi_agent_env.step(agent_id, agent_action)
+
+        observation_proto = proto_env_message_pb2.Observation(
+            observation=utils.numproto.ndarray_to_proto(observation),
+            reward=reward,
+            done=done,
+            info=json.dumps(info)
+        )
+
+        return observation_proto
 
 
 class MultiAgentServer:

@@ -2,7 +2,9 @@ import logging
 import numpy as np
 import grpc
 import gym
-from abc import ABCMeta, abstractmethod
+import json
+
+import typing
 
 from multi_agent_gym.protos.proto_env_message_pb2 import SubEnvInfo
 from multi_agent_gym import utils
@@ -33,24 +35,45 @@ class AgentEnv(gym.Env):
     def _init_action_space(self) -> None:
         raise NotImplementedError
 
-    def reset(self):
+    def reset(self) -> np.ndarray:
         sub_env_info = proto_env_message_pb2.SubEnvInfo(sub_env_id=self.agent_id)
 
-        initial_observation_proto: proto_env_message_pb2.InitialObservation = self.stub.GetInitialObservation(sub_env_info)
+        initial_observation_proto: proto_env_message_pb2.InitialObservation = \
+            self.stub.GetInitialObservation(sub_env_info)
+
         initial_observation = utils.numproto.proto_to_ndarray(initial_observation_proto.observation)
 
         assert self.observation_space.contains(initial_observation)
 
         logger.info("Initial observation: {}".format(initial_observation))
 
-    def step(self, action):
-        pass
+        return initial_observation
+
+    def step(self, action: np.ndarray) -> typing.Tuple[np.ndarray, float, bool, dict]:
+        sub_env_info_proto = proto_env_message_pb2.SubEnvInfo(sub_env_id=self.agent_id)
+        action_proto = utils.numproto.ndarray_to_proto(action)
+
+        action_info_proto = proto_env_message_pb2.ActionInfo(sub_env_info=sub_env_info_proto, action=action_proto)
+
+        observation_proto: proto_env_message_pb2.Observation = \
+            self.stub.GetObservation(action_info_proto)
+
+        obs = utils.numproto.proto_to_ndarray(observation_proto.observation)
+        reward = observation_proto.reward
+        done = observation_proto.done
+        info = json.loads(observation_proto.info)
+
+        logger.info("Observation: {}. Reward: {}. Done: {}. Info: {}.".format(obs, reward, done, info))
+
+        assert self.observation_space.contains(obs)
+
+        return obs, reward, done, info
 
     def render(self, mode='human'):
         raise NotImplementedError
 
     def close(self):
-        super().close() # Call in the end
+        super().close()  # Call in the end
 
 
 def run():
