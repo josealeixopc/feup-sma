@@ -2,6 +2,7 @@ import logging
 import numpy as np
 import grpc
 import gym
+from abc import ABCMeta, abstractmethod
 
 from multi_agent_gym.protos.proto_env_message_pb2 import SubEnvInfo
 from multi_agent_gym import utils
@@ -14,16 +15,31 @@ logger = utils.logger.create_standard_logger(__name__, logging.DEBUG)
 
 class AgentEnv(gym.Env):
 
-    def __init__(self, server: str):
+    def __init__(self, agent_id: str, server: str):
+        self.agent_id = agent_id
         self.server = server
         self.channel = grpc.insecure_channel(self.server)
         self.stub = proto_env_message_pb2_grpc.TurnBasedServerStub(self.channel)
 
+        self.observation_space: gym.Space
+        self.action_space: gym.Space
+
+        self._init_observation_space()
+        self._init_action_space()
+
+    def _init_observation_space(self) -> None:
+        raise NotImplementedError
+
+    def _init_action_space(self) -> None:
+        raise NotImplementedError
+
     def reset(self):
-        sub_env_info = proto_env_message_pb2.SubEnvInfo(sub_env_id="1")
+        sub_env_info = proto_env_message_pb2.SubEnvInfo(sub_env_id=self.agent_id)
 
         initial_observation_proto: proto_env_message_pb2.InitialObservation = self.stub.GetInitialObservation(sub_env_info)
         initial_observation = utils.numproto.proto_to_ndarray(initial_observation_proto.observation)
+
+        assert self.observation_space.contains(initial_observation)
 
         logger.info("Initial observation: {}".format(initial_observation))
 
@@ -34,7 +50,6 @@ class AgentEnv(gym.Env):
         raise NotImplementedError
 
     def close(self):
-
         super().close() # Call in the end
 
 
