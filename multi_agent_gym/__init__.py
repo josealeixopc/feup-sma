@@ -1,2 +1,2 @@
 from .agent import AgentEnv
-from .server import MultiAgentEnv
+from .server import MultiAgentEnv, MultiAgentServer

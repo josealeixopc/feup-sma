@@ -1,6 +1,7 @@
+import gym
 import numpy as np
 
-from multi_agent_gym import AgentEnv, MultiAgentEnv, agent
+from multi_agent_gym import AgentEnv
 
 
 class RedSpyEnv(AgentEnv):
@@ -8,10 +9,10 @@ class RedSpyEnv(AgentEnv):
         super().__init__(agent_id, server)
 
     def _init_observation_space(self) -> None:
-        pass
+        self.observation_space = gym.spaces.MultiDiscrete([4, 4, 4])
 
     def _init_action_space(self) -> None:
-        pass
+        self.observation_space = gym.spaces.MultiDiscrete([4, 4, 4])
 
     def reset(self):
         super().reset()
@@ -26,14 +27,7 @@ class RedSpyEnv(AgentEnv):
         super().close()
 
 
-class SpyVsSpyEnv(MultiAgentEnv):
-
-    def _reset(self, agent_id) -> np.ndarray:
-        pass
-
-    def _step(self, agent_id, action) -> [np.ndarray, float, bool, dict]:
-        pass
-
-
 if __name__ == '__main__':
-    spy_vs_spy_env = SpyVsSpyEnv([])
+    red_spy_env = RedSpyEnv("red1", "localhost:50051")
+
+    red_spy_env.reset()
