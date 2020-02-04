@@ -1,6 +1,7 @@
 import logging
 from concurrent.futures import ThreadPoolExecutor
 
+import numpy as np
 import grpc
 
 from multi_agent_gym import utils
@@ -13,8 +14,14 @@ logger = utils.logger.create_standard_logger(__name__, logging.DEBUG)
 
 class MultiAgentServicer(proto_env_message_pb2_grpc.TurnBasedServerServicer):
     def GetObservation(self, request, context):
+        request: proto_env_message_pb2.RequestInfo = request
+        response: proto_env_message_pb2.NDArray = request.observation
+
         logger.debug("Request: {}.".format(request))
         logger.debug("Context: {}.".format(context))
+        logger.debug("Response: {}".format(response))
+
+        return response
 
 
 def serve():
@@ -27,4 +34,5 @@ def serve():
 
 
 if __name__ == '__main__':
+    logger.info("hello")
     serve()

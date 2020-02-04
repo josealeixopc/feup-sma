@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='protos',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x17proto_env_message.proto\x12\x06protos\"Y\n\x0bRequestInfo\x12(\n\x0csub_env_info\x18\x01 \x01(\x0b\x32\x12.protos.SubEnvInfo\x12 \n\x07ndarray\x18\x02 \x01(\x0b\x32\x0f.protos.NDArray\"\x1a\n\x07NDArray\x12\x0f\n\x07ndarray\x18\x01 \x01(\x0c\" \n\nSubEnvInfo\x12\x12\n\nsub_env_id\x18\x01 \x01(\t2K\n\x0fTurnBasedServer\x12\x38\n\x0eGetObservation\x12\x13.protos.RequestInfo\x1a\x0f.protos.NDArray\"\x00\x62\x06proto3')
+  serialized_pb=_b('\n\x17proto_env_message.proto\x12\x06protos\"]\n\x0bRequestInfo\x12(\n\x0csub_env_info\x18\x01 \x01(\x0b\x32\x12.protos.SubEnvInfo\x12$\n\x0bobservation\x18\x02 \x01(\x0b\x32\x0f.protos.NDArray\"\x1a\n\x07NDArray\x12\x0f\n\x07ndarray\x18\x01 \x01(\x0c\" \n\nSubEnvInfo\x12\x12\n\nsub_env_id\x18\x01 \x01(\t2K\n\x0fTurnBasedServer\x12\x38\n\x0eGetObservation\x12\x13.protos.RequestInfo\x1a\x0f.protos.NDArray\"\x00\x62\x06proto3')
 )
 
 
@@ -41,7 +41,7 @@ _REQUESTINFO = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='ndarray', full_name='protos.RequestInfo.ndarray', index=1,
+      name='observation', full_name='protos.RequestInfo.observation', index=1,
       number=2, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -60,7 +60,7 @@ _REQUESTINFO = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=35,
-  serialized_end=124,
+  serialized_end=128,
 )
 
 
@@ -90,8 +90,8 @@ _NDARRAY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=126,
-  serialized_end=152,
+  serialized_start=130,
+  serialized_end=156,
 )
 
 
@@ -121,12 +121,12 @@ _SUBENVINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=154,
-  serialized_end=186,
+  serialized_start=158,
+  serialized_end=190,
 )
 
 _REQUESTINFO.fields_by_name['sub_env_info'].message_type = _SUBENVINFO
-_REQUESTINFO.fields_by_name['ndarray'].message_type = _NDARRAY
+_REQUESTINFO.fields_by_name['observation'].message_type = _NDARRAY
 DESCRIPTOR.message_types_by_name['RequestInfo'] = _REQUESTINFO
 DESCRIPTOR.message_types_by_name['NDArray'] = _NDARRAY
 DESCRIPTOR.message_types_by_name['SubEnvInfo'] = _SUBENVINFO
@@ -161,8 +161,8 @@ _TURNBASEDSERVER = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=188,
-  serialized_end=263,
+  serialized_start=192,
+  serialized_end=267,
   methods=[
   _descriptor.MethodDescriptor(
     name='GetObservation',
