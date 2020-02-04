@@ -13,15 +13,22 @@ logger = utils.logger.create_standard_logger(__name__, logging.DEBUG)
 
 
 class MultiAgentServicer(proto_env_message_pb2_grpc.TurnBasedServerServicer):
-    def GetObservation(self, request, context):
-        request: proto_env_message_pb2.RequestInfo = request
-        response: proto_env_message_pb2.NDArray = request.observation
 
-        logger.debug("Request: {}.".format(request))
-        logger.debug("Context: {}.".format(context))
-        logger.debug("Response: {}".format(response))
+    def GetInitialObservation(self,
+                              request: proto_env_message_pb2.SubEnvInfo,
+                              context) -> proto_env_message_pb2.InitialObservation:
+        logger.debug("Got the following request: {}".format(request))
 
-        return response
+        initial_observation_arr = np.array([[1, 1, 1], [2, 2, 2]])
+        initial_observation_arr_proto = utils.numproto.ndarray_to_proto(initial_observation_arr)
+
+        initial_observation = proto_env_message_pb2.InitialObservation(observation=initial_observation_arr_proto)
+        return initial_observation
+
+    def GetObservation(self,
+                       request: proto_env_message_pb2.ActionInfo,
+                       context) -> proto_env_message_pb2.Observation:
+        return super().GetObservation(request, context)
 
 
 def serve():

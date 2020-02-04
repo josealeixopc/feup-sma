@@ -3,16 +3,28 @@ syntax = "proto3";
 package protos;
 
 service TurnBasedServer {
-  rpc GetObservation(RequestInfo) returns (NDArray) {}
+  rpc GetInitialObservation(SubEnvInfo) returns (InitialObservation) {}
+  rpc GetObservation(ActionInfo) returns (Observation) {}
 }
 
-// From here: https://github.com/xainag/numproto/blob/master/numproto/protobuf/ndarray.proto
-message RequestInfo {
+message ActionInfo {
   SubEnvInfo sub_env_info = 1;
-  NDArray observation = 2;
+  NDArray action = 2;
+}
+
+message Observation {
+  NDArray observation = 1;
+  float reward = 2;
+  bool done = 3;
+  string info = 4;
+}
+
+message InitialObservation {
+  NDArray observation = 1;
 }
 
 message NDArray {
+  // From here: https://github.com/xainag/numproto/blob/master/numproto/protobuf/ndarray.proto
   bytes ndarray = 1;
 }
 

@@ -1,6 +1,7 @@
 import logging
 import numpy as np
 import grpc
+import gym
 
 from multi_agent_gym.protos.proto_env_message_pb2 import SubEnvInfo
 from multi_agent_gym import utils
@@ -9,6 +10,32 @@ from multi_agent_gym.protos import proto_env_message_pb2
 from multi_agent_gym.protos import proto_env_message_pb2_grpc
 
 logger = utils.logger.create_standard_logger(__name__, logging.DEBUG)
+
+
+class AgentEnv(gym.Env):
+
+    def __init__(self, server: str):
+        self.server = server
+        self.channel = grpc.insecure_channel(self.server)
+        self.stub = proto_env_message_pb2_grpc.TurnBasedServerStub(self.channel)
+
+    def reset(self):
+        sub_env_info = proto_env_message_pb2.SubEnvInfo(sub_env_id="1")
+
+        initial_observation_proto: proto_env_message_pb2.InitialObservation = self.stub.GetInitialObservation(sub_env_info)
+        initial_observation = utils.numproto.proto_to_ndarray(initial_observation_proto.observation)
+
+        logger.info("Initial observation: {}".format(initial_observation))
+
+    def step(self, action):
+        pass
+
+    def render(self, mode='human'):
+        raise NotImplementedError
+
+    def close(self):
+
+        super().close() # Call in the end
 
 
 def run():
@@ -29,4 +56,5 @@ def run():
 
 
 if __name__ == '__main__':
-    run()
+    env = AgentEnv("localhost:50051")
+    env.reset()

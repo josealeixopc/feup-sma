@@ -14,16 +14,28 @@ class TurnBasedServerStub(object):
     Args:
       channel: A grpc.Channel.
     """
+    self.GetInitialObservation = channel.unary_unary(
+        '/protos.TurnBasedServer/GetInitialObservation',
+        request_serializer=proto__env__message__pb2.SubEnvInfo.SerializeToString,
+        response_deserializer=proto__env__message__pb2.InitialObservation.FromString,
+        )
     self.GetObservation = channel.unary_unary(
         '/protos.TurnBasedServer/GetObservation',
-        request_serializer=proto__env__message__pb2.RequestInfo.SerializeToString,
-        response_deserializer=proto__env__message__pb2.NDArray.FromString,
+        request_serializer=proto__env__message__pb2.ActionInfo.SerializeToString,
+        response_deserializer=proto__env__message__pb2.Observation.FromString,
         )
 
 
 class TurnBasedServerServicer(object):
   # missing associated documentation comment in .proto file
   pass
+
+  def GetInitialObservation(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
 
   def GetObservation(self, request, context):
     # missing associated documentation comment in .proto file
@@ -35,10 +47,15 @@ class TurnBasedServerServicer(object):
 
 def add_TurnBasedServerServicer_to_server(servicer, server):
   rpc_method_handlers = {
+      'GetInitialObservation': grpc.unary_unary_rpc_method_handler(
+          servicer.GetInitialObservation,
+          request_deserializer=proto__env__message__pb2.SubEnvInfo.FromString,
+          response_serializer=proto__env__message__pb2.InitialObservation.SerializeToString,
+      ),
       'GetObservation': grpc.unary_unary_rpc_method_handler(
           servicer.GetObservation,
-          request_deserializer=proto__env__message__pb2.RequestInfo.FromString,
-          response_serializer=proto__env__message__pb2.NDArray.SerializeToString,
+          request_deserializer=proto__env__message__pb2.ActionInfo.FromString,
+          response_serializer=proto__env__message__pb2.Observation.SerializeToString,
       ),
   }
   generic_handler = grpc.method_handlers_generic_handler(

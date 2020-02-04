@@ -20,28 +20,28 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='protos',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x17proto_env_message.proto\x12\x06protos\"]\n\x0bRequestInfo\x12(\n\x0csub_env_info\x18\x01 \x01(\x0b\x32\x12.protos.SubEnvInfo\x12$\n\x0bobservation\x18\x02 \x01(\x0b\x32\x0f.protos.NDArray\"\x1a\n\x07NDArray\x12\x0f\n\x07ndarray\x18\x01 \x01(\x0c\" \n\nSubEnvInfo\x12\x12\n\nsub_env_id\x18\x01 \x01(\t2K\n\x0fTurnBasedServer\x12\x38\n\x0eGetObservation\x12\x13.protos.RequestInfo\x1a\x0f.protos.NDArray\"\x00\x62\x06proto3')
+  serialized_pb=_b('\n\x17proto_env_message.proto\x12\x06protos\"W\n\nActionInfo\x12(\n\x0csub_env_info\x18\x01 \x01(\x0b\x32\x12.protos.SubEnvInfo\x12\x1f\n\x06\x61\x63tion\x18\x02 \x01(\x0b\x32\x0f.protos.NDArray\"_\n\x0bObservation\x12$\n\x0bobservation\x18\x01 \x01(\x0b\x32\x0f.protos.NDArray\x12\x0e\n\x06reward\x18\x02 \x01(\x02\x12\x0c\n\x04\x64one\x18\x03 \x01(\x08\x12\x0c\n\x04info\x18\x04 \x01(\t\":\n\x12InitialObservation\x12$\n\x0bobservation\x18\x01 \x01(\x0b\x32\x0f.protos.NDArray\"\x1a\n\x07NDArray\x12\x0f\n\x07ndarray\x18\x01 \x01(\x0c\" \n\nSubEnvInfo\x12\x12\n\nsub_env_id\x18\x01 \x01(\t2\x99\x01\n\x0fTurnBasedServer\x12I\n\x15GetInitialObservation\x12\x12.protos.SubEnvInfo\x1a\x1a.protos.InitialObservation\"\x00\x12;\n\x0eGetObservation\x12\x12.protos.ActionInfo\x1a\x13.protos.Observation\"\x00\x62\x06proto3')
 )
 
 
 
 
-_REQUESTINFO = _descriptor.Descriptor(
-  name='RequestInfo',
-  full_name='protos.RequestInfo',
+_ACTIONINFO = _descriptor.Descriptor(
+  name='ActionInfo',
+  full_name='protos.ActionInfo',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='sub_env_info', full_name='protos.RequestInfo.sub_env_info', index=0,
+      name='sub_env_info', full_name='protos.ActionInfo.sub_env_info', index=0,
       number=1, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='observation', full_name='protos.RequestInfo.observation', index=1,
+      name='action', full_name='protos.ActionInfo.action', index=1,
       number=2, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -60,7 +60,90 @@ _REQUESTINFO = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=35,
-  serialized_end=128,
+  serialized_end=122,
+)
+
+
+_OBSERVATION = _descriptor.Descriptor(
+  name='Observation',
+  full_name='protos.Observation',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='observation', full_name='protos.Observation.observation', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='reward', full_name='protos.Observation.reward', index=1,
+      number=2, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='done', full_name='protos.Observation.done', index=2,
+      number=3, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='info', full_name='protos.Observation.info', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=124,
+  serialized_end=219,
+)
+
+
+_INITIALOBSERVATION = _descriptor.Descriptor(
+  name='InitialObservation',
+  full_name='protos.InitialObservation',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='observation', full_name='protos.InitialObservation.observation', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=221,
+  serialized_end=279,
 )
 
 
@@ -90,8 +173,8 @@ _NDARRAY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=130,
-  serialized_end=156,
+  serialized_start=281,
+  serialized_end=307,
 )
 
 
@@ -121,23 +204,41 @@ _SUBENVINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=158,
-  serialized_end=190,
+  serialized_start=309,
+  serialized_end=341,
 )
 
-_REQUESTINFO.fields_by_name['sub_env_info'].message_type = _SUBENVINFO
-_REQUESTINFO.fields_by_name['observation'].message_type = _NDARRAY
-DESCRIPTOR.message_types_by_name['RequestInfo'] = _REQUESTINFO
+_ACTIONINFO.fields_by_name['sub_env_info'].message_type = _SUBENVINFO
+_ACTIONINFO.fields_by_name['action'].message_type = _NDARRAY
+_OBSERVATION.fields_by_name['observation'].message_type = _NDARRAY
+_INITIALOBSERVATION.fields_by_name['observation'].message_type = _NDARRAY
+DESCRIPTOR.message_types_by_name['ActionInfo'] = _ACTIONINFO
+DESCRIPTOR.message_types_by_name['Observation'] = _OBSERVATION
+DESCRIPTOR.message_types_by_name['InitialObservation'] = _INITIALOBSERVATION
 DESCRIPTOR.message_types_by_name['NDArray'] = _NDARRAY
 DESCRIPTOR.message_types_by_name['SubEnvInfo'] = _SUBENVINFO
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
-RequestInfo = _reflection.GeneratedProtocolMessageType('RequestInfo', (_message.Message,), {
-  'DESCRIPTOR' : _REQUESTINFO,
+ActionInfo = _reflection.GeneratedProtocolMessageType('ActionInfo', (_message.Message,), {
+  'DESCRIPTOR' : _ACTIONINFO,
   '__module__' : 'proto_env_message_pb2'
-  # @@protoc_insertion_point(class_scope:protos.RequestInfo)
+  # @@protoc_insertion_point(class_scope:protos.ActionInfo)
   })
-_sym_db.RegisterMessage(RequestInfo)
+_sym_db.RegisterMessage(ActionInfo)
+
+Observation = _reflection.GeneratedProtocolMessageType('Observation', (_message.Message,), {
+  'DESCRIPTOR' : _OBSERVATION,
+  '__module__' : 'proto_env_message_pb2'
+  # @@protoc_insertion_point(class_scope:protos.Observation)
+  })
+_sym_db.RegisterMessage(Observation)
+
+InitialObservation = _reflection.GeneratedProtocolMessageType('InitialObservation', (_message.Message,), {
+  'DESCRIPTOR' : _INITIALOBSERVATION,
+  '__module__' : 'proto_env_message_pb2'
+  # @@protoc_insertion_point(class_scope:protos.InitialObservation)
+  })
+_sym_db.RegisterMessage(InitialObservation)
 
 NDArray = _reflection.GeneratedProtocolMessageType('NDArray', (_message.Message,), {
   'DESCRIPTOR' : _NDARRAY,
@@ -161,16 +262,25 @@ _TURNBASEDSERVER = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=192,
-  serialized_end=267,
+  serialized_start=344,
+  serialized_end=497,
   methods=[
+  _descriptor.MethodDescriptor(
+    name='GetInitialObservation',
+    full_name='protos.TurnBasedServer.GetInitialObservation',
+    index=0,
+    containing_service=None,
+    input_type=_SUBENVINFO,
+    output_type=_INITIALOBSERVATION,
+    serialized_options=None,
+  ),
   _descriptor.MethodDescriptor(
     name='GetObservation',
     full_name='protos.TurnBasedServer.GetObservation',
-    index=0,
+    index=1,
     containing_service=None,
-    input_type=_REQUESTINFO,
-    output_type=_NDARRAY,
+    input_type=_ACTIONINFO,
+    output_type=_OBSERVATION,
     serialized_options=None,
   ),
 ])
