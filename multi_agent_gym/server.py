@@ -11,7 +11,7 @@ from multi_agent_gym import utils
 from multi_agent_gym.protos import proto_env_message_pb2
 from multi_agent_gym.protos import proto_env_message_pb2_grpc
 
-logger = utils.logger.create_standard_logger(__name__, logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 
 class MultiAgentEnv:
@@ -101,5 +101,6 @@ class MultiAgentServer:
         self.server.add_insecure_port("[::]:{}".format(port))
 
     def serve(self):
+        logger.info("Starting server in port: {}".format(self.port))
         self.server.start()
         self.server.wait_for_termination()
