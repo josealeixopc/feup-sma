@@ -73,12 +73,15 @@ class MultiAgentServicer(proto_env_message_pb2_grpc.TurnBasedServerServicer):
         agent_action = utils.numproto.proto_to_ndarray(request.action)
         observation, reward, done, info = self.multi_agent_env.step(agent_id, agent_action)
 
-        observation_proto = proto_env_message_pb2.Observation(
-            observation=utils.numproto.ndarray_to_proto(observation),
-            reward=reward,
-            done=done,
-            info=json.dumps(info)
-        )
+        try:
+            observation_proto = proto_env_message_pb2.Observation(
+                observation=utils.numproto.ndarray_to_proto(observation),
+                reward=reward,
+                done=done,
+                info=json.dumps(info)
+            )
+        except Exception as e:
+            raise e
 
         return observation_proto
 

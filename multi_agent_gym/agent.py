@@ -50,6 +50,7 @@ class AgentEnv(gym.Env):
 
     def step(self, action: np.ndarray) -> typing.Tuple[np.ndarray, float, bool, dict]:
         sub_env_info_proto = proto_env_message_pb2.SubEnvInfo(sub_env_id=self.agent_id)
+
         action_proto = utils.numproto.ndarray_to_proto(action)
 
         action_info_proto = proto_env_message_pb2.ActionInfo(sub_env_info=sub_env_info_proto, action=action_proto)
