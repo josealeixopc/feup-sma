@@ -90,8 +90,15 @@ class SpyVsSpyEnv(MultiAgentEnv):
 
             self.reset_barrier.wait()
 
+            timeout = 2
+            timeout_start = time.time()
             while not self.red_spy_acted:
                 time.sleep(0.1)
+
+                if time.time() < timeout_start + timeout:
+                    # Timeout in case it was the last episode and the RedSpy will not act anymore.
+                    self.red_spy_action = 0
+                    break
 
             return np.array([0, self.red_spy_action])
 

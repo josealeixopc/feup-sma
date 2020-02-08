@@ -8,7 +8,7 @@ from spy_vs_spy import utils
 AVAILABLE_ENVIRONMENTS = ['red-spy-env', 'red-sniper-env']
 AVAILABLE_ALGORITHMS = ['dqn']
 
-DEFAULT_TRAINING_TIMESTEPS = 10000
+DEFAULT_TRAINING_TIMESTEPS = 100
 TENSORBOARD_DIR_NAME = 'tensorboard'
 TRAININGS_DIR_NAME = 'trainings'
 
