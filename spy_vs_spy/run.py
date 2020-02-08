@@ -32,6 +32,8 @@ def _load_model(algorithm, model_path):
     else:
         raise Exception("Algorithm '{}' is unknown.".format(algorithm))
 
+    return model
+
 
 def observe(environment, algorithm, model_path, num_steps):
     env = _get_gym_environment(environment)
@@ -43,6 +45,7 @@ def observe(environment, algorithm, model_path, num_steps):
         action, _states = model.predict(obs)
         obs, rewards, dones, info = env.step(action)
         env.render()
+        print("Step: {}. Obs: {}. Reward: {}. Done: {}".format(i, obs, rewards, dones))
 
     env.close()
 
