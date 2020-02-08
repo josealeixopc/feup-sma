@@ -7,3 +7,4 @@ logging.basicConfig(stream=sys.stdout,
 
 # Don't log messages from the multi_agent_gym package
 # logging.getLogger('multi_agent_gym').propagate = False
+
