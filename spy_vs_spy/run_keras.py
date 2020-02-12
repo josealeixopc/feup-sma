@@ -6,12 +6,15 @@ from spy_vs_spy.env.spy_vs_spy_ma_env import RedSpyEnv, RedSniperEnv, RedSpyUniq
 from spy_vs_spy import utils
 
 import logging
+
+import numpy as np
 logger = logging.getLogger(__name__)
 
 AVAILABLE_ENVIRONMENTS = ['red-spy-env', 'red-sniper-env', 'red-spy-uniqueness-env']
-AVAILABLE_ALGORITHMS = ['dqn']
+AVAILABLE_ALGORITHMS = ['dqn-keras', 'dqn-keras-uniqueness']
 
-DEFAULT_TRAINING_TIMESTEPS = 10000
+DEFAULT_TRAINING_TIMESTEPS = 100
+DEFAULT_TRAINING_EPISODES = DEFAULT_TRAINING_TIMESTEPS
 TENSORBOARD_DIR_NAME = 'tensorboard'
 TRAININGS_DIR_NAME = 'trainings'
 
@@ -69,8 +72,8 @@ def evaluate(environment, algorithm, model_path, n_eval_episodes=100):
 
 
 def train(environment, algorithm, timesteps):
-    from stable_baselines import DQN
-    from stable_baselines.bench import Monitor
+    from drl import dqn_uniqueness, dqn
+    from gym import wrappers
 
     now = datetime.now()
     starting_time = now.strftime("%Y-%m-%d-%H-%M-%S")
@@ -111,18 +114,46 @@ def train(environment, algorithm, timesteps):
 
     # Optional: PPO2 requires a vectorized environment to run
     # the env is now wrapped automatically when passing it to the constructor
-    env = Monitor(env, filename=monitor_file_path, allow_early_resets=True)
+    env = wrappers.Monitor(env, monitor_file_path, force=True)
+
+    # Next, we build a very simple model.
+    state_size = env.observation_space.shape[0]
+    action_size = env.action_space.n
 
     if algorithm == AVAILABLE_ALGORITHMS[0]:
-        model = DQN('MlpPolicy', env, verbose=1, tensorboard_log=tensorboard_dir)
+        agent = dqn.DQNAgent(state_size, action_size)
+    elif algorithm == AVAILABLE_ENVIRONMENTS[1]:
+        agent = dqn_uniqueness.DQNAgent(state_size, action_size)
     else:
         raise Exception("Algorithm '{}' is unknown.".format(algorithm))
 
     # Train the agent
-    model.learn(total_timesteps=timesteps, tb_log_name=current_training_info)
-    model.save(model_file_path)
+    # agent.load("./save/cartpole-dqn.h5")
+    done = False
+    batch_size = 32
+    for e in range(DEFAULT_TRAINING_EPISODES):
+        state = env.reset()
+        state = np.reshape(state, [1, state_size])
+        while True:
+            # env.render()
+            action = agent.act(state)
+            next_state, reward, done, _ = env.step(action)
 
-    logger.info("Finished training model: {}. Saved training info in: {}".format(model, current_training_info_dir))
+            next_state = np.reshape(next_state, [1, state_size])
+            agent.memorize(state, action, reward, next_state, done)
+            state = next_state
+
+            if done:
+                break
+
+            if len(agent.memory) > batch_size:
+                agent.replay(batch_size)
+
+        if e % 10 == 0:  # save weights every 10 episodes
+            agent.save(model_file_path)
+
+    env.close()
+    logger.info("Finished training model: {}. Saved training info in: {}".format(agent, current_training_info_dir))
 
 
 def check_arguments(args):

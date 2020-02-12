@@ -28,6 +28,12 @@ class AgentEnv(gym.Env):
         self._init_observation_space()
         self._init_action_space()
 
+        self.action = None
+        self.obs = None
+        self.reward = None
+        self.done = None
+        self.info = None
+
     def _init_observation_space(self) -> None:
         raise NotImplementedError
 
@@ -45,10 +51,15 @@ class AgentEnv(gym.Env):
         logger.info("Initial observation: {}".format(initial_observation))
 
         assert self.observation_space.contains(initial_observation)
+        self.obs = initial_observation
 
-        return initial_observation
+        return self.obs
 
     def step(self, action: np.ndarray) -> typing.Tuple[np.ndarray, float, bool, dict]:
+        self.action = action
+
+        logger.info("Action: {}.".format(action))
+
         sub_env_info_proto = proto_env_message_pb2.SubEnvInfo(sub_env_id=self.agent_id)
 
         action_proto = utils.numproto.ndarray_to_proto(action)
@@ -70,7 +81,12 @@ class AgentEnv(gym.Env):
         assert isinstance(done, bool)
         assert isinstance(info, dict)
 
-        return obs, reward, done, info
+        self.obs = obs
+        self.reward = reward
+        self.done = done
+        self.info = info
+
+        return self.obs, self.reward, self.done, self.info
 
     def render(self, mode='human'):
         raise NotImplementedError

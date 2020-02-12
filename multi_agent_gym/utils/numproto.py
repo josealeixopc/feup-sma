@@ -2,11 +2,13 @@
 
 """NumPy ndarray to protobuf serialization and deserialization"""
 from io import BytesIO
+import logging
 
 import numpy as np
 
 from multi_agent_gym.protos.proto_env_message_pb2 import NDArray
 
+logger = logging.getLogger(__name__)
 
 def ndarray_to_proto(nda: np.ndarray) -> NDArray:
     """Serializes a numpy array into an NDArray protobuf message.
@@ -17,6 +19,7 @@ def ndarray_to_proto(nda: np.ndarray) -> NDArray:
     Returns:
         Returns an NDArray protobuf message.
     """
+    logger.debug("NDA: ".format(nda))
     nda_bytes = BytesIO()
     np.save(nda_bytes, nda, allow_pickle=False)
 
