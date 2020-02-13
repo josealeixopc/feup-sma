@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 AVAILABLE_ENVIRONMENTS = ['red-spy-env', 'red-sniper-env', 'red-spy-uniqueness-env']
 AVAILABLE_ALGORITHMS = ['dqn-keras', 'dqn-keras-uniqueness']
 
-DEFAULT_TRAINING_TIMESTEPS = 100
+DEFAULT_TRAINING_TIMESTEPS = 10000
 DEFAULT_TRAINING_EPISODES = DEFAULT_TRAINING_TIMESTEPS
 TENSORBOARD_DIR_NAME = 'tensorboard'
 TRAININGS_DIR_NAME = 'trainings'
@@ -122,7 +122,7 @@ def train(environment, algorithm, timesteps):
 
     if algorithm == AVAILABLE_ALGORITHMS[0]:
         agent = dqn.DQNAgent(state_size, action_size)
-    elif algorithm == AVAILABLE_ENVIRONMENTS[1]:
+    elif algorithm == AVAILABLE_ALGORITHMS[1]:
         agent = dqn_uniqueness.DQNAgent(state_size, action_size)
     else:
         raise Exception("Algorithm '{}' is unknown.".format(algorithm))
@@ -132,6 +132,7 @@ def train(environment, algorithm, timesteps):
     done = False
     batch_size = 32
     for e in range(DEFAULT_TRAINING_EPISODES):
+        logger.info("Starting episode: {}".format(e))
         state = env.reset()
         state = np.reshape(state, [1, state_size])
         while True:
@@ -143,11 +144,11 @@ def train(environment, algorithm, timesteps):
             agent.memorize(state, action, reward, next_state, done)
             state = next_state
 
-            if done:
-                break
-
             if len(agent.memory) > batch_size:
                 agent.replay(batch_size)
+
+            if done:
+                break
 
         if e % 10 == 0:  # save weights every 10 episodes
             agent.save(model_file_path)

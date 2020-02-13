@@ -13,7 +13,7 @@ from spy_vs_spy import utils
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-NUM_GRAY_SCOUTS = 19
+NUM_GRAY_SCOUTS = 4
 NUM_DISCRETE_VALUES_UNIQUENESS = 10
 
 

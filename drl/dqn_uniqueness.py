@@ -11,6 +11,10 @@ from tensorflow.keras.layers import Dense
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.utils import plot_model
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class DQNAgent:
     def __init__(self, state_size, action_size):
@@ -47,18 +51,22 @@ class DQNAgent:
         minibatch = random.sample(self.memory, batch_size)
 
         state_to_num_actions_taken = {}
-        for i in self.state_size:
-            state_to_num_actions_taken[i] = [0] * self.action_size
 
         for state, action, _, _, _ in minibatch:
-            state_to_num_actions_taken[state][action] += 1  # this action was called in this state
+            key = state[0][1]
+
+            if key not in state_to_num_actions_taken:
+                state_to_num_actions_taken[key] = [0] * self.action_size
+
+            state_to_num_actions_taken[key][action] += 1  # this action was called in this state
 
         uniqueness_average = DQNAgent.calculate_uniqueness_average(state_to_num_actions_taken)
+        # logger.debug("Uniqueness average for current batch: {}".format(uniqueness_average))
 
         for state, action, reward, next_state, done in minibatch:
-            target = reward
+            target = reward + uniqueness_average * self.epsilon
             if not done:
-                target = (reward + uniqueness_average + self.gamma *
+                target = (reward + uniqueness_average * self.epsilon + self.gamma *
                           np.amax(self.model.predict(next_state)[0]))
             target_f = self.model.predict(state)
             target_f[0][action] = target
