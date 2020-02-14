@@ -36,26 +36,40 @@ if __name__ == '__main__':
     # plt.show()
     # sys.exit(0)
 
-    keras_dqn_uniqueness_file = "/home/jazz/Projects/FEUP/ProDEI/feup-sma/spy_vs_spy/trainings/2020-02-13-19-14-28-dqn-keras-uniqueness-red-sniper-env/monitor.csv/openaigym.episode_batch.0.32515.stats.json"
-    keras_dqn_file = "/home/jazz/Projects/FEUP/ProDEI/feup-sma/spy_vs_spy/trainings/2020-02-13-14-25-00-dqn-keras-red-sniper-env/monitor.csv/openaigym.episode_batch.0.16963.stats.json"
+    keras_dqn_uniqueness_files = [
+        "/home/jazz/Projects/FEUP/ProDEI/feup-sma/spy_vs_spy/trainings/2020-02-13-18-08-30-dqn-keras-uniqueness-red-sniper-env/monitor.csv/openaigym.episode_batch.0.30768.stats.json",
+        "/home/jazz/Projects/FEUP/ProDEI/feup-sma/spy_vs_spy/trainings/2020-02-13-19-14-28-dqn-keras-uniqueness-red-sniper-env/monitor.csv/openaigym.episode_batch.0.32515.stats.json",
+        "/home/jazz/Projects/FEUP/ProDEI/feup-sma/spy_vs_spy/trainings/2020-02-13-21-14-36-dqn-keras-uniqueness-red-sniper-env/monitor.csv/openaigym.episode_batch.0.5046.stats.json"
+        ]
+    keras_dqn_files = [
+        "/home/jazz/Projects/FEUP/ProDEI/feup-sma/spy_vs_spy/trainings/2020-02-13-14-25-00-dqn-keras-red-sniper-env/monitor.csv/openaigym.episode_batch.0.16963.stats.json",
+        "/home/jazz/Projects/FEUP/ProDEI/feup-sma/spy_vs_spy/trainings/2020-02-13-20-18-50-dqn-keras-red-sniper-env/monitor.csv/openaigym.episode_batch.0.3661.stats.json",
+        "/home/jazz/Projects/FEUP/ProDEI/feup-sma/spy_vs_spy/trainings/2020-02-13-21-48-28-dqn-keras-red-sniper-env/monitor.csv/openaigym.episode_batch.0.9769.stats.json"
+    ]
 
-    with open(keras_dqn_uniqueness_file) as f:
-        keras_dqn_uniqueness_json = json.load(f)
+    list_rewards_dqn_uniqueness = []
 
-    with open(keras_dqn_file) as f:
-        keras_dqn_json = json.load(f)
+    for json_file in keras_dqn_uniqueness_files:
+        with open(json_file) as f:
+            keras_dqn_uniqueness_json = json.load(f)
+            list_rewards_dqn_uniqueness.append(keras_dqn_uniqueness_json['episode_rewards'])
 
-    all_rewards = keras_dqn_uniqueness_json['episode_rewards'] + keras_dqn_json[
-        'episode_rewards']
-    all_lengths = keras_dqn_uniqueness_json['episode_lengths'] + keras_dqn_json[
-        'episode_lengths']
+    list_rewards_dqn = []
+
+    for json_file in keras_dqn_files:
+        with open(json_file) as f:
+            keras_dqn_json = json.load(f)
+            list_rewards_dqn.append(keras_dqn_json['episode_rewards'])
+
+    average_rewards_dqn_uniqueness = [sum(elem)/len(elem) for elem in zip(*list_rewards_dqn_uniqueness)]
+    average_rewards_dqn = [sum(elem)/len(elem) for elem in zip(*list_rewards_dqn)]
 
     plt.style.use('ggplot')
 
     handles = []
 
-    x, y = results_plotter.window_func(np.array(range(len(keras_dqn_json['episode_rewards']))),
-                                       np.array(keras_dqn_json['episode_rewards']),
+    x, y = results_plotter.window_func(np.array(range(len(average_rewards_dqn))),
+                                       np.array(average_rewards_dqn),
                                        100,
                                        np.mean)
 
@@ -66,8 +80,8 @@ if __name__ == '__main__':
     #                              keras_dqn_uniqueness_json['episode_rewards'],
     #                              100)
 
-    x, y = results_plotter.window_func(np.array(range(len(keras_dqn_json['episode_rewards']))),
-                                       np.array(keras_dqn_uniqueness_json['episode_rewards']),
+    x, y = results_plotter.window_func(np.array(range(len(average_rewards_dqn_uniqueness))),
+                                       np.array(average_rewards_dqn_uniqueness),
                                        100,
                                        np.mean)
 
@@ -76,7 +90,7 @@ if __name__ == '__main__':
 
     plt.xlim(left=0)
     plt.xlabel("Number of Episodes")
-    plt.ylabel("Rewards per Episode")
+    plt.ylabel("Average Reward per Episode")
     plt.tight_layout()
     plt.legend(handles=handles)
     ax = plt.gca()
