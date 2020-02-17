@@ -1,6 +1,7 @@
 
 ### CUSTOM GITIGNORE BEGIN
 
+docs
 examples*
 
 ### CUSTOM GITIGNORE END
