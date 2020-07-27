@@ -1,14 +1,12 @@
-import math
-
-import numpy as np
-import gym
 import logging
 import time
 import typing
-
 from threading import Barrier
+
+import gym
+import numpy as np
+
 from multi_agent_gym import MultiAgentEnv, MultiAgentServer, AgentEnv
-from spy_vs_spy import utils
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
